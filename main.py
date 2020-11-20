@@ -76,7 +76,8 @@ def write_files(headers, rows, update_date):
   and columns for date, staff, students, total
   '''
   for row in rows:
-    filename = './csvs/' + row[0] + '.csv'
+    csv_dir = './csvs/'
+    filename = csv_dir + row[0] + '.csv'
     need_headers = False
     last_date = ''
     try:
