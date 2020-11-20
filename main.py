@@ -67,7 +67,7 @@ def make_my_table(table):
 def save_as_csv(table_name, headers, rows):
   # if the file does not exist write headers, otherwise don't
   # if the update date is already in the table then don't update (weekends)
-  pd.DataFrame(rows, columns=headers).to_csv(f"{table_name}", index = False)
+  pd.DataFrame(rows, columns=headers).to_csv(table_name, index = False)
   # mode = 'a' to append
 
 def write_files(headers, rows, update_date):
@@ -106,7 +106,7 @@ def main(url):
   last_updated = get_update_date(soup)
   # extract all the tables from the web page
   tables = get_all_tables(soup)
-  print(f"[+] Found a total of {len(tables)} tables.")
+  print("[+] Found a total of " + str(len(tables)) + " tables.")
   # iterate over all tables
   for i, table in enumerate(tables, start=1):
     # get the table headers
