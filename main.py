@@ -58,9 +58,9 @@ def get_update_date(soup):
   for em in ems:
     if em.find("Last Updated") != -1:  # why doesn't this work?
   """
-  print(ems[1])
+  #print(ems[1])
   update_date = dparser.parse(ems[1], fuzzy = True)
-  print(update_date)
+  print('Last Update: ', update_date)
   return update_date
 
 def save_as_csv(table_name, headers, rows):
@@ -85,7 +85,7 @@ def write_files(headers, rows, update_date):
     try:
       with open(filename, mode='r') as f:
         lines = f.readlines()
-        print(lines)
+        #print(lines)
         start_date = lines[1][:lines[1].find(' ')]
         end_of_date = lines[-1].find(',')
         last_date = lines[-1][:end_of_date]
@@ -105,7 +105,7 @@ def write_files(headers, rows, update_date):
         #print('start_date = ' + str(start_date))
         #print('update_date = ' + str(update_date))
         d1 = datetime.strptime(start_date, "%Y-%m-%d")
-        d2 = datetime.strptime(update_date[:update_date.find(' ')], "%Y-%m-%d")
+        d2 = datetime.strptime(str(update_date)[:str(update_date).find(' ')], "%Y-%m-%d")
         day = abs((d2 - d1).days)
 
       if last_date != str(update_date):
@@ -118,7 +118,7 @@ def main(url):
   last_updated = get_update_date(soup)
   # extract all the tables from the web page
   tables = get_all_tables(soup)
-  print("[+] Found a total of " + str(len(tables)) + " tables.")
+  #print("[+] Found a total of " + str(len(tables)) + " tables.")
   # iterate over all tables
   for i, table in enumerate(tables, start=1):
     # get the table headers
