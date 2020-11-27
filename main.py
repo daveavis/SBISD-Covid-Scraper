@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup as bs
 import dateutil.parser as dparser
+import os
 
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
 # US english
@@ -77,18 +78,20 @@ def write_files(headers, rows, update_date):
   '''
   for row in rows:
     csv_dir = './csvs/'
+    if not os.path.exists(csv_dir):
+      os.makedirs(csv_dir)
     filename = csv_dir + row[0] + '.csv'
     need_headers = False
     last_date = ''
     try:
       with open(filename, mode='r') as f:
         lines = f.readlines()
-        #print(lines)
+          #print(lines)
+        end_of_date = lines[-1].find(',')
+        last_date = lines[-1][:end_of_date]
     except IOError:
       print('File ' + filename + ' not accessible')
       need_headers = True
-      end_of_date = lines[-1].find(',')
-      last_date = lines[-1][:end_of_date]
     with open(filename, mode='a') as f:
       if need_headers:
         f.write('Date,' + headers[1] + ',' + headers[2] + ',' + headers[3] + '\n')
