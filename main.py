@@ -3,6 +3,7 @@ import pandas as pd
 from bs4 import BeautifulSoup as bs
 import dateutil.parser as dparser
 import os
+from datetime import datetime
 
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
 # US english
@@ -62,9 +63,6 @@ def get_update_date(soup):
   print(update_date)
   return update_date
 
-def make_my_table(table):
-  pass
-
 def save_as_csv(table_name, headers, rows):
   # if the file does not exist write headers, otherwise don't
   # if the update date is already in the table then don't update (weekends)
@@ -82,25 +80,36 @@ def write_files(headers, rows, update_date):
       os.makedirs(csv_dir)
     filename = csv_dir + row[0] + '.csv'
     need_headers = False
+    start_date = ''
     last_date = ''
     try:
       with open(filename, mode='r') as f:
         lines = f.readlines()
-          #print(lines)
+        print(lines)
+        start_date = lines[1][:lines[1].find(' ')]
         end_of_date = lines[-1].find(',')
         last_date = lines[-1][:end_of_date]
     except IOError:
-      print('File ' + filename + ' not accessible')
+      #print('File ' + filename + ' not accessible')
       need_headers = True
     with open(filename, mode='a') as f:
       if need_headers:
-        f.write('Date,' + headers[1] + ',' + headers[2] + ',' + headers[3] + '\n')
+        f.write('Date,Days After Start,' + headers[1] + ',' + headers[2] + ',' + headers[3] + '\n')
       #end_of_date = lines[-1].find(',')
       #last_date = lines[-1][:end_of_date]
       #print('last_date = ' + last_date)
       #print('update_date = ' + str(update_date))
+      if start_date == '':
+        day = 0
+      else:
+        #print('start_date = ' + str(start_date))
+        #print('update_date = ' + str(update_date))
+        d1 = datetime.strptime(start_date, "%Y-%m-%d")
+        d2 = datetime.strptime(update_date[:update_date.find(' ')], "%Y-%m-%d")
+        day = abs((d2 - d1).days)
+
       if last_date != str(update_date):
-        f.write(str(update_date) + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
+        f.write(str(update_date) + ',' + str(day) + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
       
 
 def main(url):
